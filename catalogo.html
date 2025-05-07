@@ -1,90 +1,196 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Catálogo - Dulce Tentación</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Catálogo de Repostería</title>
   <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
   <style>
     body {
       font-family: 'Quicksand', sans-serif;
-      background-color: #fff0f5;
-      padding: 40px;
+      background: #fff0f5;
+      padding: 20px;
       text-align: center;
-    }
-
-    h1 {
-      color: #d16ba5;
-      margin-bottom: 30px;
     }
 
     .producto {
       display: inline-block;
       background: white;
-      margin: 15px;
+      margin: 10px;
       border-radius: 15px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      width: 220px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      width: 200px;
       overflow: hidden;
     }
 
     .producto img {
       width: 100%;
-      height: 160px;
+      height: 130px;
       object-fit: cover;
     }
 
     .producto h2 {
       font-size: 18px;
-      color: #444;
       margin: 10px 0 5px;
     }
 
     .producto p {
-      color: #888;
       font-size: 14px;
-      margin-bottom: 15px;
+      color: #555;
     }
 
-    a.boton-volver {
-      display: inline-block;
-      margin-top: 30px;
-      padding: 10px 20px;
+    .producto button {
       background-color: #ff69b4;
       color: white;
+      border: none;
+      padding: 8px 12px;
+      margin: 10px 0 15px;
       border-radius: 20px;
-      text-decoration: none;
+      cursor: pointer;
     }
 
-    a.boton-volver:hover {
+    .producto button:hover {
       background-color: #e754a5;
+    }
+
+    #carrito {
+      margin-top: 30px;
+      text-align: left;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    /* Botón WhatsApp flotante */
+    .whatsapp-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #25D366;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: bold;
+      font-family: sans-serif;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     }
   </style>
 </head>
 <body>
 
-  <h1>Catálogo de Productos</h1>
+  <h1>Catálogo de Repostería</h1>
 
   <div class="producto">
-    <img src="descarga.jpeg" alt="pastel de chocolate">
-    <h2>pastel de chocolate</h2>
-    <p>Desde $3.000 por unidad</p>
+    <img src="imagenes/descarga (1).jpeg" alt="torta de freza">
+    <h2>torta de freza</h2>
+    <p>$3.000</p>
+    <button onclick="agregarAlCarrito('torta de freza', 3000)">Agregar al carrito</button>
   </div>
 
   <div class="producto">
-    <img src="descarga (2).jpeg" alt="Torta decorada">
-    <h2>Torta personalizada</h2>
-    <p>Desde $20.000</p>
+    <img src="imagenes/descarga (2).jpeg" alt="Torta">
+    <h2>Torta</h2>
+    <p>$20.000</p>
+    <button onclick="agregarAlCarrito('Torta', 20000)">Agregar al carrito</button>
   </div>
 
   <div class="producto">
-    <img src="descarga (1).jpeg" alt="pastel de freza">
-    <h2>pastel de freza</h2>
-    <p>Desde $2.000 el pack</p>
+    <img src="imagenes/descarga.jpeg" alt="torta de chocolate">
+    <h2>torta de chocolate</h2>
+    <p>$2.000</p>
+    <button onclick="agregarAlCarrito('torta de chocolate', 2000)">Agregar al carrito</button>
   </div>
 
-  <br>
-  <a href="index.html" class="boton-volver">Volver a inicio</a>
+  <div id="carrito">
+    <h2>Carrito de compras</h2>
+    <ul id="lista-carrito"></ul>
+    <p><strong>Total:</strong> $<span id="total">0</span></p>
+  </div>
+  <button onclick="enviarPedido()" style="
+  margin-top: 15px;
+  padding: 10px 20px;
+  background-color: #25D366;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+">
+  Enviar pedido por WhatsApp
+</button>
+
+  <!-- Botón de WhatsApp flotante -->
+  <a class="whatsapp-btn" href="https://wa.me/56983362990?text=Hola%2C%20vi%20tu%20cat%C3%A1logo%20y%20me%20gustar%C3%ADa%20hacer%20un%20pedido" target="_blank">
+    WhatsApp
+  </a>
+
+  <script>
+    let total = 0;
+    const lista = document.getElementById('lista-carrito');
+    const totalEl = document.getElementById('total');
+    const carrito = {};
+  
+    function agregarAlCarrito(producto, precio) {
+      if (carrito[producto]) {
+        carrito[producto].cantidad += 1;
+        carrito[producto].elemento.querySelector('.cantidad').textContent = 'x' + carrito[producto].cantidad;
+      } else {
+        const li = document.createElement('li');
+        li.innerHTML = `${producto} <span class="cantidad">x1</span> - $${precio}`;
+  
+        li.dataset.precio = precio;
+  
+        const btnQuitar = document.createElement('button');
+        btnQuitar.textContent = '✖';
+        btnQuitar.style.marginLeft = '10px';
+        btnQuitar.style.color = 'red';
+        btnQuitar.style.cursor = 'pointer';
+        btnQuitar.style.border = 'none';
+        btnQuitar.style.background = 'transparent';
+  
+        btnQuitar.onclick = () => {
+          total -= carrito[producto].cantidad * precio;
+          totalEl.textContent = total;
+          li.remove();
+          delete carrito[producto];
+        };
+  
+        li.appendChild(btnQuitar);
+        lista.appendChild(li);
+  
+        carrito[producto] = {
+          cantidad: 1,
+          elemento: li
+        };
+      }
+  
+      total += precio;
+      totalEl.textContent = total;
+    }
+    function enviarPedido() {
+  if (Object.keys(carrito).length === 0) {
+    alert("Tu carrito está vacío.");
+    return;
+  }
+
+  let mensaje = "Hola, quiero hacer un pedido:%0A";
+  for (let producto in carrito) {
+    mensaje += `- ${producto} x${carrito[producto].cantidad}%0A`;
+  }
+  mensaje += `%0ATotal: $${total}`;
+
+  const telefono = "56983362990";
+  const url = `https://wa.me/${telefono}?text=${mensaje}`;
+
+  window.open(url, '_blank');
+}
+
+  </script>  
 
 </body>
 </html>
