@@ -84,6 +84,7 @@
 <body>
 
   <h1 id="inicio">Catálogo de Repostería</h1>
+  <input type="text" id="buscador" placeholder="Buscar productos..." style="padding: 10px; margin: 20px auto; display: block; width: 80%; max-width: 400px; border-radius: 10px; border: 1px solid #ccc;">
 
   <div class="producto">
     <img src="descarga (1).jpeg" alt="torta de freza">
@@ -189,6 +190,15 @@
 
   window.open(url, '_blank');
 }
+document.getElementById('buscador').addEventListener('input', function () {
+  const filtro = this.value.toLowerCase();
+  const productos = document.querySelectorAll('.producto');
+
+  productos.forEach(prod => {
+    const texto = prod.innerText.toLowerCase();
+    prod.style.display = texto.includes(filtro) ? 'inline-block' : 'none';
+  });
+});
 
   </script>  
 <a href="index.html" style="
